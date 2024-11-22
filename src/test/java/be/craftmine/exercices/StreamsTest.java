@@ -6,6 +6,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StreamsTest {
 
@@ -14,7 +16,7 @@ public class StreamsTest {
     void filter_list_even_numbers() {
         List<Integer> numbers = List.of(1, 2, 3, 4, 5);
 
-        List<Integer> evens = null;
+        List<Integer> evens = numbers.stream().filter(n -> n % 2 == 0).toList();
 
         Assertions.assertThat(evens).isEqualTo(List.of(2, 4));
     }
@@ -24,7 +26,7 @@ public class StreamsTest {
     void sort_list_alphabetically() {
         List<String> names = List.of("a", "c", "b");
 
-        List<String> sorted = null;
+        List<String> sorted = names.stream().sorted().toList();
 
         Assertions.assertThat(sorted).isEqualTo(List.of("a", "b", "c"));
     }
@@ -34,7 +36,7 @@ public class StreamsTest {
     void sum_list() {
         List<Integer> numbers = List.of(1, 2, 3);
 
-        Optional<Integer> reduce = null;
+        Optional<Integer> reduce = numbers.stream().reduce((integer, integer2) -> integer+integer2);
 
         Assertions.assertThat(reduce.get()).isEqualTo(6);
     }
@@ -44,8 +46,8 @@ public class StreamsTest {
     void find_largest_smallest() {
         List<Integer> numbers = List.of(1, 2, 3, 4, 5);
 
-        int min = 0;
-        int max = 0;
+        int min = numbers.stream().min(Integer::compareTo).orElseThrow();
+        int max = numbers.stream().max(Integer::compareTo).orElseThrow();
 
         Assertions.assertThat(min).isEqualTo(1);
         Assertions.assertThat(max).isEqualTo(5);
@@ -57,7 +59,7 @@ public class StreamsTest {
         List<String> list1 = List.of("A", "B", "C");
         List<String> list2 = List.of("D", "E", "F");
 
-        List<String> merged = null;
+        List<String> merged = Stream.concat(list1.stream(),list2.stream()).toList();
 
         Assertions.assertThat(merged).isEqualTo(List.of("A", "B", "C", "D", "E", "F"));
     }
@@ -79,7 +81,7 @@ public class StreamsTest {
                 new Person("Charlie", 30)
         );
 
-        Map<Integer, List<Person>> groupedByAge = null;
+        Map<Integer, List<Person>> groupedByAge = people.stream().collect(Collectors.groupingBy(Person::getAge));
         System.out.println(groupedByAge);
     }
 
@@ -88,7 +90,7 @@ public class StreamsTest {
     void combine_by_comma() {
         List<String> words = List.of("apple", "banana", "cherry");
 
-        String result = null;
+        String result = words.stream().collect(Collectors.joining(";"));
         System.out.println(result); // Output: apple, banana, cherry
     }
 
@@ -98,7 +100,31 @@ public class StreamsTest {
         List<Integer> numbers = List.of(1, 2, 3, 4, 2, 5, 3);
 
         Set<Integer> seen = new HashSet<>();
-        Set<Integer> duplicates = null;
+        Set<Integer> duplicates = new HashSet<>(numbers);
         System.out.println(duplicates);
+    }
+
+    //  Convert a list of strings into a Map where the key is the string and the value is its length
+    @Test
+    void covert_to_map_value_length() {
+        List<String> words = Arrays.asList("hello", "world", "java");
+
+        Map<String, Integer> map = words.stream().collect(Collectors.toMap(word -> word, String::length));
+        System.out.println(map); // Output: {hello=5, world=5, java=4}
+    }
+
+    //  Sort a list of Person objects first by age, then by name alphabetically.
+    @Test
+    void Sort_by_multiple_criteria() {
+        List<Person> people = Arrays.asList(
+                new Person("Alice", 30),
+                new Person("Bob", 25),
+                new Person("Charlie", 25)
+        );
+
+        List<Person> sorted = people.stream()
+                .sorted(Comparator.comparingInt(Person::getAge).thenComparing(Person::getName))
+                .toList();
+        sorted.forEach(p -> System.out.println(p.getName() + ", " + p.getAge()));
     }
 }
