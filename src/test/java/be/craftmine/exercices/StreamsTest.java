@@ -127,4 +127,18 @@ public class StreamsTest {
                 .toList();
         sorted.forEach(p -> System.out.println(p.getName() + ", " + p.getAge()));
     }
+
+    //  Regrouper des nombres en pairs et impairs
+    @Test
+    void Grouping_by_even_odd () {
+        List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6);
+
+    }
+
+    //  Regrouper et compter les occurrences
+    @Test
+    void Grouping_by_counting () {
+        List<String> items = List.of("apple", "banana", "cherry", "apple", "banana", "apple");
+
+    }
 }
